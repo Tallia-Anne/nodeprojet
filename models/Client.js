@@ -39,6 +39,10 @@ module.exports = (dbinfo, Sequelize) => {
                 type: Sequelize.DataTypes.INTEGER(5),
                 allowNull: true,
             },
+            tel: {
+                type: Sequelize.DataTypes.STRING(10),
+                allowNull: true,
+            },
             ville: {
                 type: Sequelize.DataTypes.STRING(60),
                 allowNull: true,
@@ -47,6 +51,11 @@ module.exports = (dbinfo, Sequelize) => {
                 //set data type with max length
                 type: Sequelize.DataTypes.STRING(60),
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
+                allowNull: true,
+            },
+            Status: {
+                type: Sequelize.DataTypes.TINYINT(1),
+
                 allowNull: true,
             },
         }, {

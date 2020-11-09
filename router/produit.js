@@ -176,4 +176,22 @@ router.get("/getById/:id", (req, res) => {
             res.json(err);
         });
 });
+router.get("/findBy/getById/:id/:gamme", (req, res) => {
+    db.produit
+        .findOne({
+            where: { id: req.params.id },
+            nom: {
+                [Op.like]: "%" + req.params.nom,
+            },
+            include: [{
+                model: db.image,
+            }, ],
+        })
+        .then((produit) => {
+            res.status(200).json({ produit: produit });
+        })
+        .catch((err) => {
+            res.json(err);
+        });
+});
 module.exports = router;

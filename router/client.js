@@ -18,15 +18,52 @@ router.post("/register", (req, res) => {
                 req.body.password = hash;
                 db.client
                     .create(req.body)
-                    .then((itemclient) => {
+                    .then((item) => {
+                        var nodemailer = require("nodemailer");
+                        var transporter = nodemailer.createTransport({
+                            service: "gmail",
+                            auth: {
+                                user: "erinawambiekele@gmail.com",
+                                pass: "tallia00",
+                            },
+                        });
+
+                        var mailOptions = {
+                            from: "erinewam@gmail.com",
+                            to: item.email,
+                            subject: "Bienvenue dans Afro dream",
+                            text: "http://localhost:8080/valide/:email" +
+                                " Valider votre email " +
+                                " " +
+                                item.email,
+                        };
+
+                        transporter.sendMail(mailOptions, function(error, info) {
+                            if (error) {
+                                res.json(error);
+                                console.log(error);
+                            } else {
+                                console.log("email sent" + info.response);
+                                res.json("email sent" + info.response);
+                            }
+                        });
+                    })
+                    .then((clientitem) => {
+                        let token = jwt.sign(
+                            clientitem.dataValues,
+                            process.env.SECRET_KEY, {
+                                expiresIn: 1440,
+                            }
+                        );
                         res.status(200).json({
                             message: "Vous devez valider votre mail",
                             email: itemclient.email,
                         });
                     })
-                    .catch((err) => {
-                        res.json(err);
-                    });
+
+                .catch((err) => {
+                    res.json(err);
+                });
             } else {
                 res.json("cette adresse mail et déja utilisée");
             }
@@ -43,13 +80,13 @@ router.post("/login", (req, res) => {
         .then((client) => {
             console.log(client);
             // tu verifier le status de l'utilisateur
-            if (client.Status === true) {
+            if (client.Status == 1) {
                 if (bcrypt.compareSync(req.body.password, client.password)) {
                     let clientdata = {
-                        nom: client.nom,
-                        prenom: client.prenom,
                         email: client.email,
-                        image: client.image,
+                        password: client.password,
+                        prenom: client.prenom,
+                        nom: client.nom,
                     };
                     //generer le token
                     let token = jwt.sign(clientdata, process.env.SECRET_KEY, {
@@ -81,7 +118,7 @@ router.get("/profile/:id", (req, res) => {
                 });
                 res.status(200).json({ token: token });
             } else {
-                res.json("error le client n'est pas dans la base de donnée !!");
+                res.json("error: le client n'est pas dans la base de donnée !!");
             }
         })
         .catch((err) => {
@@ -99,7 +136,15 @@ router.put("/update/:id", (req, res) => {
                 password = bcrypt.hashSync(req.body.password, 10);
                 req.body.password = password;
                 client
-                    .update(req.body)
+                    .update({
+                        prenom: req.body.prenom,
+                        nom: req.body.nom,
+                        cp: req.body.cp,
+                        adresse: req.body.adresse,
+                        tel: req.body.tel,
+                        email: req.body.email,
+                        password: req.body.password,
+                    })
                     .then((clientitem) => {
                         db.client
                             .findOne({
@@ -147,14 +192,14 @@ router.post("/validemail", (req, res) => {
                         // L'utilisateur va recevoir ce message
                         .then(() => {
                             res.json({
-                                message: "votre email est validé",
+                                message: "votre compte a été activer",
                             });
                         })
                         .catch((err) => {
                             res.json(err);
                         });
                 } else {
-                    res.json("votre mail est déja validé");
+                    res.json("votre compte est déja validé");
                 }
             } else {
                 res.status(404).json("client not found !!!");
@@ -164,6 +209,7 @@ router.post("/validemail", (req, res) => {
             res.json(err);
         });
 });
+
 // route permet faire mot de passe oublié
 router.post("/forgetpassword", (req, res) => {
     var randtoken = require("rand-token");
@@ -193,8 +239,14 @@ router.post("/forgetpassword", (req, res) => {
                         var mailOptions = {
                             from: "erinewam@gmail.com",
                             to: item.email,
-                            subject: "Sending Email using Node.js",
-                            text: "http://localhost:8080/Mtp" + " " + item.forget,
+                            subject: "Afro Dream",
+                            text: " Voici le lien pour mettre à jour " +
+                                " " +
+                                "http://localhost:8080/Mtp" +
+                                " " +
+                                " le code de mot de passe oublié:" +
+                                " " +
+                                item.forget,
                         };
 
                         transporter.sendMail(mailOptions, function(error, info) {

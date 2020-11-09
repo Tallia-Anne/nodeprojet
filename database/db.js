@@ -70,7 +70,7 @@ db.paiement.belongsTo(db.client, { foreignKey: "clientId" });
 // Les tables intermediarres:
 /* 1 */
 db.commande.belongsToMany(db.produit, {
-    through: "Contenirs",
+    through: "Contenir",
     foreignKey: "commandeId",
 });
 

@@ -15,6 +15,7 @@ router.post("/ajouter", (req, res) => {
     //crée une nouvelle occurence( ajouter une nouvelle ligne)  qui va ajouter avis
     db.avis
         .create(avis)
+        // l'avis existe
         .then((rep) => {
             // faire reference a rep then(rep)
             // on veut savoir s'il reussite à créer alors il va nous envoyer une réponse

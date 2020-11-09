@@ -21,8 +21,10 @@ app.use("/client", require("../nodeprojet/router/client"));
 app.use("/produit", require("../nodeprojet/router/produit"));
 app.use("/avis", require("../nodeprojet/router/avis"));
 app.use("/souscategorie", require("../nodeprojet/router/souscategorie"));
+app.use("/categorie", require("../nodeprojet/router/categorie"));
 app.use("/commande", require("../nodeprojet/router/commande"));
 app.use("/remise", require("../nodeprojet/router/remise"));
+
 app.listen(port, hostname, function() {
     console.log("mon server fonction sur http://" + hostname + ":" + port + "\n");
 });

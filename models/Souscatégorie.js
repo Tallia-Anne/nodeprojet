@@ -10,25 +10,9 @@ module.exports = (dbinfo, Sequelize) => {
                 autoIncrement: true,
             },
 
-            Status: {
-                type: Sequelize.DataTypes.BOOLEAN,
-
-                allowNull: true,
-            },
-            stock: {
-                type: Sequelize.DataTypes.INTEGER(5),
-            },
             nom: {
                 type: Sequelize.DataTypes.STRING(75),
-            },
-            ref: {
-                type: Sequelize.DataTypes.STRING(75),
-            },
-            prix: {
-                type: Sequelize.DataTypes.DECIMAL(7, 2),
-            },
-            description: {
-                type: Sequelize.DataTypes.TEXT,
+                allowNull: true,
             },
         }, {
             timestamps: true,

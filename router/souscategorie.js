@@ -1,84 +1,62 @@
 const Express = require("express"),
     router = Express.Router(),
+    { Op } = require("sequelize"),
     db = require("../database/db");
 
 // cette route permet de créer un souscategorie
-router.post("/cree", (req, res) => {
-    var image = req.body.image;
-    console.log(req.body);
+router.post("/new", (req, res) => {
     db.souscategorie
         .findOne({
-            // recuperer la reference du souscategorie
-            where: { ref: req.body.ref },
+            where: {
+                nom: req.body.nom,
+                produitId: req.body.produitId,
+                categorieId: req.body.categorieId,
+            },
         })
         .then((souscategorie) => {
             if (!souscategorie) {
                 db.souscategorie
-                    .create({
-                        categorieId: req.body.idcategorid,
-                        souscategorieId: categorieitem.id,
-                    })
-                    .then((souscategorieitem) => {
-                        db.image
-                            .create({
-                                image: image,
-                                souscategorieIdId: categorieitem.id,
-                            })
-                            .then(() => {
-                                db.souscategorie
-                                    .findOne({
-                                        // recuperer la reference du souscategorie
-                                        where: { id: itemcategorie.id },
-                                        include: [{
-                                            model: db.image,
-                                        }, ],
-                                    })
-                                    // recuperer tous les informations
-                                    .then((souscategorie) => {
-                                        res.status(200).json({ souscategorie: souscategorie });
-                                    })
-                                    .catch((err) => {
-                                        res.status(502).json(err);
-                                    });
-                            });
-                    })
+                    .create(req.body)
+                    .then((response) => res.json(response))
                     .catch((err) => {
                         res.json(err);
                     });
             } else {
-                souscategorie
-                    .update({
-                        stock: req.body.stock,
-                    })
-                    .then((rep) => {
-                        res.status(200).json({ souscategorie: rep });
-                    })
-                    .catch((err) => {
-                        res.status(403).json("not updated");
-                    });
+                res.json("la souscatégorie existe déjà");
             }
-        })
-        .catch((err) => {
-            res.status(404).json("Not found");
         });
 });
 
 // cette route permet d'afficher tous les souscategories
-router.get("/afficher", (req, res) => {
+
+router.get("/show", (req, res) => {
     db.souscategorie
-        .findAll({
-            include: [{
-                model: db.image,
-            }, ],
-        })
-        .then((souscategories) => {
-            if (souscategories) {
-                res.status(200).json({
-                    souscategories: souscategories,
+        .findAll({})
+        .then((souscategorie) => {
+            if (souscategorie) {
+                res.json({
+                    souscategorie: souscategorie,
                 });
             } else {
-                res.status(404).json("il n'a pas de souscategories");
+                res.json({ error: "Il n'y a pas de souscategorie" });
             }
+        })
+        .catch((err) => {
+            res.json("error" + err);
+        });
+});
+
+router.get("/findBy/:nom", (req, res) => {
+    db.souscategorie
+        .findOne({
+            where: {
+                nom: {
+                    [Op.like]: "%" + req.params.nom,
+                },
+            },
+        })
+        .then((souscategorie) => {
+            res.status(200).json({ categories: categories });
         })
         .catch((err) => {
             res.json(err);

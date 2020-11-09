@@ -9,7 +9,6 @@ module.exports = (dbinfo, Sequelize) => {
 
                 autoIncrement: true,
             },
-
             Status: {
                 type: Sequelize.DataTypes.BOOLEAN,
 
@@ -21,11 +20,18 @@ module.exports = (dbinfo, Sequelize) => {
             nom: {
                 type: Sequelize.DataTypes.STRING(75),
             },
+
             ref: {
                 type: Sequelize.DataTypes.STRING(75),
             },
             typeproduit: {
                 type: Sequelize.DataTypes.STRING(75),
+            },
+            application: {
+                type: Sequelize.DataTypes.TEXT,
+            },
+            contenance: {
+                type: Sequelize.DataTypes.TEXT,
             },
             prix: {
                 type: Sequelize.DataTypes.DECIMAL(7, 2),

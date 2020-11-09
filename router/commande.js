@@ -6,15 +6,20 @@ const Express = require("express"),
 // permet de créer une commande
 router.post("/naitre", (req, res) => {
     db.commande
+        // recuperer l'id du client
         .findOne({
             where: { clientId: req.body.clientId, Status: 10 },
         })
+        //la commande existe déjà
         .then((commande) => {
             if (!commande) {
                 console.log(commande);
                 db.commande
+                    // alors il va créer une commande
                     .create(req.body)
+                    // la commmandeitem existe déjà
                     .then((commmandeitem) => {
+                        //alors créer  contenir
                         db.contenir
                             .create({
                                 Status: 1,
