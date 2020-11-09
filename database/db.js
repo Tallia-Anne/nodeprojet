@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 const db = {};
 
-const dbinfo = new Sequelize("e-commerce", "root", "", {
+const dbinfo = new Sequelize("commerce", "root", "", {
     host: "localhost",
     dialect: "mysql",
     port: 3306,
