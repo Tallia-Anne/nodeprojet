@@ -3,6 +3,26 @@ const Express = require("express"),
     bcrypt = require("bcrypt"),
     db = require("../database/db");
 
+
+router.post("/new", (req, res) => {
+    var commande = { clientId: req.body.clientId, Status: 1 };
+    db.commande.create(commande)
+        .then((commande) => {
+            for (let i = 0; i < req.body.panier.length; i++) {
+                command.addProduits(req.body.panier[i].produitId, { through: { prix: req.body.panier[i].prix_unitaire, qtn: req.body.panier[i].quantite } })
+                    .then(resp => {
+                        res.json(resp)
+                    })
+                    .catch(err => {
+                        res.json(err)
+                    })
+            }
+        })
+        .catch((err) => {
+            res.json(err)
+        })
+});
+
 // permet de créer une commande
 router.post("/naitre", (req, res) => {
     db.commande

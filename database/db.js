@@ -49,6 +49,10 @@ db.approvisionner = require("../models/Approvisionner")(dbinfo, Sequelize);
 
 db.categorie = require("../models/Catégorie")(dbinfo, Sequelize);
 
+db.user = require("../models/User")(dbinfo, Sequelize);
+
+db.newsletter = require("../models/Newsletter")(dbinfo, Sequelize);
+
 db.souscategorie = require("../models/Souscatégorie")(dbinfo, Sequelize);
 
 // Les relations:

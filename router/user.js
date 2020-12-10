@@ -6,52 +6,25 @@ const db = require("../database/db");
 
 process.env.SECRET_KEY = "secret";
 // s'inscrit
-
 router.post("/register", (req, res) => {
-    db.client.findOne({
+    if ((req.body.role != "admin") && (req.body.role != "")) {
+        role = "user"
+    } else {
+        role = "admin"
+    }
+    db.user.findOne({
             where: { email: req.body.email }
         })
-        .then(client => {
-            if (!client) {
+        .then(user => {
+            if (!user) {
                 password = bcrypt.hashSync(req.body.password, 10);
-                db.client.create({
+                db.user.create({
+                        nom: req.body.nom,
+                        prenom: req.body.prenom,
                         email: req.body.email,
-                        password: password
+                        password: password,
+                        role: role
                     })
-                    ///nodemailer
-                    .then(clientitem => {
-                        let token = jwt.sign(clientitem.dataValues,
-                            process.env.SECRET_KEY, {
-                                expiresIn: 1440
-                            });
-
-                        res.status(200).json({ token: token })
-                    })
-                    .catch(err => {
-                        res.send(err)
-                    })
-            } else {
-                res.json("cleint déjà dans la base");
-            }
-        })
-        .catch(err => {
-            res.json({ error: err })
-        })
-
-});
-/*
-router.post("/register", (req, res) => {
-    db.client
-        .findOne({
-            // demander de recuperer l'email
-            where: { email: req.body.email },
-        })
-        .then((client) => {
-            if (!client) {
-                const hash = bcrypt.hashSync(req.body.password, 10);
-                req.body.password = hash;
-                db.client
-                    .create(req.body)
                     .then((item) => {
                         var nodemailer = require("nodemailer");
                         var transporter = nodemailer.createTransport({
@@ -71,8 +44,9 @@ router.post("/register", (req, res) => {
                             from: "contact@afro-dream.fr",
                             to: item.email,
                             subject: "Bienvenue dans Afro dream",
-                            text: "https://afro-dream.fr/valide/:email" +
-                                " Valider votre email " +
+
+                            text: "http://localhost:8080/loginadmin/" +
+                                " Pour se connecter dans l'espace admin " +
                                 " " +
                                 item.email,
                         };
@@ -87,80 +61,77 @@ router.post("/register", (req, res) => {
                             }
                         });
                     })
-                    .then((clientitem) => {
-                        let token = jwt.sign(
-                            clientitem.dataValues,
+                    .then(useritem => {
+                        var data = {
+                            id: useritem.id,
+                            role: useritem.role
+                        }
+                        let token = jwt.sign(data,
                             process.env.SECRET_KEY, {
-                                expiresIn: 1440,
-                            }
-                        );
-                        res.status(200).json({
-                            message: "Vous devez valider votre mail",
-                            email: itemclient.email,
-                            
-                        });
-                    })
+                                expiresIn: 1440
+                            });
 
-                .catch((err) => {
-                    res.json(err);
-                });
+                        res.status(200).json({ auth: true, token: token })
+                    })
+                    .catch(err => {
+                        res.status(401).json({ err })
+                    })
             } else {
-                res.json("cette adresse mail et déja utilisée");
+                res.json("user déja dans la base");
             }
         })
-        .catch((err) => {
-            res.json(err);
-        });
+        .catch(err => {
+            res.json({ error: err })
+        })
 });
-*/
 // se connecter
 router.post("/login", (req, res) => {
-    db.client
-        // on chercher l'utilisateur
-        .findOne({ where: { email: req.body.email } })
-        .then((client) => {
-            console.log(client);
-            // tu verifier le status de l'utilisateur
-            if (client.Status == 1) {
-                if (bcrypt.compareSync(req.body.password, client.password)) {
-                    let clientdata = {
-                        email: client.email,
-                        password: client.password,
-                        prenom: client.prenom,
-                        nom: client.nom,
-                        id: client.id
-                    };
-                    //generer le token
-                    let token = jwt.sign(clientdata, process.env.SECRET_KEY, {
-                        expiresIn: 1440,
-                    });
-                    // envoyer le token
-                    res.status(200).json({ token: token });
+    console.log(req.body);
+    db.user.findOne({
+            where: { email: req.body.email }
+        }).then(user => {
+            if (user) {
+                if (bcrypt.compareSync(req.body.password,
+                        user.password)) {
+                    var userdata = {
+                        id: user.id,
+                        role: user.role,
+                        nom: user.nom,
+                        prenom: user.prenom
+                    }
+                    let token = jwt.sign(userdata,
+                        process.env.SECRET_KEY, {
+                            expiresIn: 1440
+                        });
+                    res.status(200).json({ auth: true, token: token })
                 } else {
-                    res.json("error mail or error password");
+                    res.json({
+                        auth: false,
+                        message: "error email or password"
+                    })
                 }
             } else {
-                res.json({ message: "Vous devez valider votre mail" });
+                return res.status(404).json('user not found')
             }
         })
-        .catch((err) => {
-            res.json(err);
-        });
+        .catch(err => {
+            res.json(err)
+        })
 });
 //route: c'est le profile
 router.get("/profile/:id", (req, res) => {
-    db.client
+    db.user
         .findOne({
             where: { id: req.params.id },
         })
-        .then((client) => {
-            if (client) {
-                let token = jwt.sign(client.dataValues, process.env.SECRET_KEY, {
+        .then((user) => {
+            if (user) {
+                let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
                     expiresIn: 1440,
                 });
                 res.status(200).json({ token: token });
             } else {
-                res.json("error: le client n'est pas dans la base de donnée !!");
+                res.json("error: le user n'est pas dans la base de donnée !!");
             }
         })
         .catch((err) => {
@@ -169,20 +140,20 @@ router.get("/profile/:id", (req, res) => {
 });
 
 router.put("/update/:id", (req, res) => {
-    db.client.findOne({
+    db.user.findOne({
             where: { id: req.params.id }
         })
-        .then(client => {
-            if (client) {
+        .then(user => {
+            if (user) {
                 password = bcrypt.hashSync(req.body.password, 10);
                 req.body.password = password;
-                client.update(req.body)
-                    .then(clientitem => {
-                        db.client.findOne({
-                                where: { id: clientitem.id }
+                user.update(req.body)
+                    .then(useritem => {
+                        db.user.findOne({
+                                where: { id: useritem.id }
                             })
-                            .then(client => {
-                                let token = jwt.sign(client.dataValues, process.env.SECRET_KEY, {
+                            .then(user => {
+                                let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
                                     expiresIn: 1440 //in seconds
                                 });
                                 res.status(200).json({ token: token })
@@ -192,10 +163,10 @@ router.put("/update/:id", (req, res) => {
                             })
                     })
                     .catch(err => {
-                        res.status(402).send("impossible de mettre à jour le client" + err);
+                        res.status(402).send("impossible de mettre à jour le user" + err);
                     })
             } else {
-                res.json("client n'est pas dans la base")
+                res.json("user n'est pas dans la base")
             }
         })
         .catch(err => {
@@ -204,16 +175,16 @@ router.put("/update/:id", (req, res) => {
 });
 // route permet valider son adresse mail
 router.post("/validemail", (req, res) => {
-    db.client
+    db.user
         .findOne({
             // recuperer le email
             where: { email: req.body.email },
         })
-        .then((client) => {
-            if (client) {
-                if (client.Status !== 1) {
+        .then((user) => {
+            if (user) {
+                if (user.Status !== 1) {
                     // changer le status qui devient un compte valide et il peut l'utiliser
-                    client
+                    user
                         .update({
                             Status: 1,
                         })
@@ -230,7 +201,7 @@ router.post("/validemail", (req, res) => {
                     res.json("votre compte est déja validé");
                 }
             } else {
-                res.status(404).json("client not found !!!");
+                res.status(404).json("user not found !!!");
             }
         })
         .catch((err) => {
@@ -243,14 +214,14 @@ router.post("/forgetpassword", (req, res) => {
     var randtoken = require("rand-token");
     // ça generer le token
     var token = randtoken.generate(16);
-    db.client
+    db.user
         .findOne({
             // recuperer l'adresse email
             where: { email: req.body.email },
         })
-        .then((client) => {
-            if (client) {
-                client
+        .then((user) => {
+            if (user) {
+                user
                     .update({
                         forget: token,
                     })
@@ -297,7 +268,7 @@ router.post("/forgetpassword", (req, res) => {
                         res.json(err);
                     });
             } else {
-                res.status(404).json("client not found");
+                res.status(404).json("user not found");
             }
         })
         .catch((err) => {
@@ -306,18 +277,18 @@ router.post("/forgetpassword", (req, res) => {
 });
 // route permet de mettre à jour le mot de passe
 router.post("/updatepassword", (req, res) => {
-    db.client
+    db.user
         .findOne({
             // recuperer le token du forget
             where: { forget: req.body.forget },
         })
-        .then((client) => {
-            if (client) {
+        .then((user) => {
+            if (user) {
                 // hacher de mot de passe
                 const hash = bcrypt.hashSync(req.body.password, 10);
                 req.body.password = hash;
                 // mettre à jour seulement le password de l'utilisateur
-                client
+                user
                     .update({
                         password: req.body.password,
                         forget: null,
