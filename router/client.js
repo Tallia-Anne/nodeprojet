@@ -8,39 +8,6 @@ process.env.SECRET_KEY = "secret";
 // s'inscrit
 
 router.post("/register", (req, res) => {
-    db.client.findOne({
-            where: { email: req.body.email }
-        })
-        .then(client => {
-            if (!client) {
-                password = bcrypt.hashSync(req.body.password, 10);
-                db.client.create({
-                        email: req.body.email,
-                        password: password
-                    })
-                    ///nodemailer
-                    .then(clientitem => {
-                        let token = jwt.sign(clientitem.dataValues,
-                            process.env.SECRET_KEY, {
-                                expiresIn: 1440
-                            });
-
-                        res.status(200).json({ token: token })
-                    })
-                    .catch(err => {
-                        res.send(err)
-                    })
-            } else {
-                res.json("cleint déjà dans la base");
-            }
-        })
-        .catch(err => {
-            res.json({ error: err })
-        })
-
-});
-/*
-router.post("/register", (req, res) => {
     db.client
         .findOne({
             // demander de recuperer l'email
@@ -97,7 +64,7 @@ router.post("/register", (req, res) => {
                         res.status(200).json({
                             message: "Vous devez valider votre mail",
                             email: itemclient.email,
-                            
+
                         });
                     })
 
@@ -112,14 +79,14 @@ router.post("/register", (req, res) => {
             res.json(err);
         });
 });
-*/
+
 // se connecter
 router.post("/login", (req, res) => {
     db.client
         // on chercher l'utilisateur
         .findOne({ where: { email: req.body.email } })
         .then((client) => {
-            console.log(client);
+
             // tu verifier le status de l'utilisateur
             if (client.Status == 1) {
                 if (bcrypt.compareSync(req.body.password, client.password)) {
@@ -155,6 +122,7 @@ router.get("/profile/:id", (req, res) => {
         })
         .then((client) => {
             if (client) {
+
                 let token = jwt.sign(client.dataValues, process.env.SECRET_KEY, {
                     expiresIn: 1440,
                 });

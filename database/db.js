@@ -55,6 +55,7 @@ db.newsletter = require("../models/Newsletter")(dbinfo, Sequelize);
 
 db.souscategorie = require("../models/Souscatégorie")(dbinfo, Sequelize);
 
+db.contact = require("../models/Contact")(dbinfo, Sequelize);
 // Les relations:
 
 db.client.hasMany(db.commande, { foreignKey: "clientId" });
