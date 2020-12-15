@@ -27,6 +27,6 @@
         "nodemailer": "^6.4.11",
         "nodemon": "1.18.4",
         "rand-token": "^1.0.1",
-        "sequelize": "4.38.0"
+        "sequelize": "5.15.1"
     }
 }
