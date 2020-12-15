@@ -18,7 +18,7 @@
     },
     "homepage": "https://github.com/Tallia-Anne/nodeprojet#readme",
     "dependencies": {
-        "bcrypt": "^3.0.6",
+        "bcrypt": "^5.0.0",
         "body-parser": "1.15.2",
         "cors": "^2.8.4",
         "express": "^4.14.0",
