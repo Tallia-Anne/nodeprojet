@@ -19,9 +19,9 @@
     "homepage": "https://github.com/Tallia-Anne/nodeprojet#readme",
     "dependencies": {
         "bcrypt": "^3.0.6",
-        "body-parser": "1.15.2",
+        "body-parser": "1.20.1",
         "cors": "^2.8.4",
-        "express": "^4.14.0",
+        "express": "^4.18.2",
         "jsonwebtoken": "7.4.2",
         "mysql2": "^1.6.1",
         "nodemailer": "^6.4.11",
