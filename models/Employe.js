@@ -1,45 +1,54 @@
-// exports table
+// exporte table with all field
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
-        "tbl_client",
+        // name of table
+        "tbl_emp",
         {
             // field name
             id: {
-                // set date type
+                 //set data type with out max length
                 type: Sequelize.DataTypes.INTEGER,
-                // set primaryKey
+                // set primaryKey = true
                 primaryKey: true,
-                // set autoIncrement
+                // set autoOncrement = true
                 autoIncrement: true
             },
-            // field name
             nom: {
-                // set data type with max length
+                //set data type with max length
                 type: Sequelize.DataTypes.STRING(45),
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
                 allowNull: false
             },
-            //field name
             prenom: {
-                // set data type with max length
+                //set data type with max length
                 type: Sequelize.DataTypes.STRING(45),
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
                 allowNull: false
             },
-            // field name
             email: {
+                //set data type with max length
+                type: Sequelize.DataTypes.STRING(255),
+                // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
+                allowNull: false
+            },
+            password: {
+                //set data type with out  max length
+                type: Sequelize.DataTypes.STRING,
+                // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
+                allowNull: false,
+            },
+            competences:{
+                //set data type with out  max length
+                type: Sequelize.DataTypes.TEXT,
+                // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
+                allowNull: false
+            },
+            poste:{
                 //set data type with max length
                 type: Sequelize.DataTypes.STRING(60),
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
                 allowNull: false
-            },
-            // field name
-            tel: {
-                //set data type with max length
-                type: Sequelize.DataTypes.STRING(15),
-                // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
-                allowNull: false
-            },
+            }
         },
         {
             /**

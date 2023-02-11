@@ -1,29 +1,24 @@
+// expots table
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
-        // table name
-        "tbl_paiement",
+        // The name of the model. The model will be stored in `sequelize.models` under this name Arelier.
+        "tbl_atelier",
         {
             // field name
             id: {
                 // set data type
                 type: Sequelize.DataTypes.INTEGER,
-                // set primaryKey
+                // set primerKey
                 primaryKey: true,
-                // set autoIncrement
+                // autoIncrement can be used to create auto_incrementing integer columns
                 autoIncrement: true
             },
-            // field name
-            prixtotal: {
-                // set data type
+            nom: {
+                //set data type with max length
                 type: Sequelize.DataTypes.STRING(45),
-                // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
-                allowNull: true
+                // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this coulimn
+                allowNull: false
             },
-            // field name
-            typepaiemet: {
-                // set data type
-                type: Sequelize.DataTypes.ENUM("cd","chèque", "espèces")
-            }
         },
         {
             /**

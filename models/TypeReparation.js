@@ -1,7 +1,7 @@
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
         // table name
-        "tbl_paiement",
+        "tbl_typereparation",
         {
             // field name
             id: {
@@ -13,17 +13,12 @@ module.exports = (dbinfo, Sequelize) => {
                 autoIncrement: true
             },
             // field name
-            prixtotal: {
+            type_reparation: {
                 // set data type
-                type: Sequelize.DataTypes.STRING(45),
+                type: Sequelize.DataTypes.STRING,
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
-                allowNull: true
+                allowNull: false
             },
-            // field name
-            typepaiemet: {
-                // set data type
-                type: Sequelize.DataTypes.ENUM("cd","chèque", "espèces")
-            }
         },
         {
             /**

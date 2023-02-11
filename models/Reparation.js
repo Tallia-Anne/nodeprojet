@@ -1,45 +1,35 @@
-// exports table
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
-        "tbl_client",
-        {
-            // field name
+        "tbl_reparation",
+        { //field name
             id: {
-                // set date type
+                // set data type
                 type: Sequelize.DataTypes.INTEGER,
-                // set primaryKey
                 primaryKey: true,
-                // set autoIncrement
                 autoIncrement: true
             },
-            // field name
-            nom: {
-                // set data type with max length
-                type: Sequelize.DataTypes.STRING(45),
+            //field name
+            date_de_reparations: {
+                // set data type
+                type: Sequelize.DataTypes.DATE,
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
                 allowNull: false
             },
             //field name
-            prenom: {
-                // set data type with max length
-                type: Sequelize.DataTypes.STRING(45),
+            temps_de_reparations: {
+                // set data type
+                type: Sequelize.DataTypes.INTEGER,
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
                 allowNull: false
             },
-            // field name
-            email: {
-                //set data type with max length
-                type: Sequelize.DataTypes.STRING(60),
+            //field name
+            prixtotal: {
+                // set data type
+                type: Sequelize.DataTypes.INTEGER,
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
                 allowNull: false
-            },
-            // field name
-            tel: {
-                //set data type with max length
-                type: Sequelize.DataTypes.STRING(15),
-                // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
-                allowNull: false
-            },
+            }
+
         },
         {
             /**

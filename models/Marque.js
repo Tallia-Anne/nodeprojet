@@ -1,29 +1,24 @@
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
         // table name
-        "tbl_paiement",
+        "tbl_marque",
         {
             // field name
             id: {
                 // set data type
                 type: Sequelize.DataTypes.INTEGER,
-                // set primaryKey
+                // set primaryKey = true
                 primaryKey: true,
-                // set autoIncrement
+                // set autoIncrement = true
                 autoIncrement: true
             },
             // field name
-            prixtotal: {
+            marque: {
                 // set data type
                 type: Sequelize.DataTypes.STRING(45),
                 // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
-                allowNull: true
+                allowNull: false
             },
-            // field name
-            typepaiemet: {
-                // set data type
-                type: Sequelize.DataTypes.ENUM("cd","chèque", "espèces")
-            }
         },
         {
             /**
@@ -37,6 +32,5 @@ module.exports = (dbinfo, Sequelize) => {
 
             underscored: true
         }
-    );
+        )
 };
-

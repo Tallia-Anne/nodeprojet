@@ -1,22 +1,22 @@
-// exporte table with all field
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
-        // name of table
-        "Image", {
+        // table name
+        "tbl_Annee", {
             // field name
             id: {
-                //set data type with out max length
+                // set data type
                 type: Sequelize.DataTypes.INTEGER,
-                // set primaryKey = true
+                // set primaryKey
                 primaryKey: true,
-                // set autoIncrement = true
+                // set autoIncrement
                 autoIncrement: true,
             },
-            image: {
-                //set data type with max length
-                type: Sequelize.DataTypes.STRING(60),
-                // setting allowNull to false will add NOT NULL to the column, which means an error will be if you add info in this column
-                allowNull: true,
+            // field name
+            annee: {
+                // set data type
+                type: Sequelize.DataTypes.INTEGER(4),
+                // unique = true
+                unique: true,
             },
         }, {
             /**
